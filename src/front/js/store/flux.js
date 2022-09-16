@@ -25,7 +25,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         try {
           // fetching data from the backend
           const resp = await fetch(
-            "https://practice-deploy-one.herokuapp.om/api/hello"
+            "https://practice-deploy-one.herokuapp.com/api/hello"
           );
           const data = await resp.json();
           setStore({ message: data.message });
