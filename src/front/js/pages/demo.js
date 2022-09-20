@@ -18,7 +18,7 @@ export const Demo = () => {
   useEffect(() => {
     if (store.products && store.products.length > 0) return;
     actions.getProducts();
-  }, [store.products]);
+  }, []);
 
   return (
     <div className="container">
@@ -43,13 +43,27 @@ export const Demo = () => {
         </button>
       </div>
 
-      <div>
+      <div className="row gap-lg-1 justify-content-around">
         {store.products &&
           store.products.map((product) => (
-            <div className="card p-3">
-              <img src={product.img_url} alt={`product ${product.name}`} />
-              {product.name}
-              <i class="bi bi-trash"></i>
+            <div
+              className="card p-3 col-5 d-flex flex-column justify-content-between"
+              key={product.cloudinary_id}
+            >
+              <div>
+                <img
+                  src={product.img_url}
+                  alt={`product ${product.name}`}
+                  className="w-100"
+                />
+                {product.name}
+              </div>
+              <button
+                className="btn btn-danger mt-3"
+                onClick={() => actions.deleteProduct(product.id)}
+              >
+                Eliminar
+              </button>
             </div>
           ))}
       </div>

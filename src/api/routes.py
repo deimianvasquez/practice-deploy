@@ -11,6 +11,10 @@ api = Blueprint('api', __name__)
 
 VALID_FORMATS = ["image/png", "image/jpg", "image/jpeg"]
 
+def method_allowed(request, method):
+    if request.method != method:
+        return jsonify({"error": "Method not Allowed"}), 405
+
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
 
@@ -22,8 +26,7 @@ def handle_hello():
 
 @api.route('/products', methods=['POST'])
 def upload_image():
-    if request.method != 'POST':
-        return jsonify({"error": "Method not Allowed"}), 405
+    method_allowed(request, "POST")
 
     image_file = request.files['file']
     name = request.form.get('name')
@@ -39,7 +42,7 @@ def upload_image():
         new_product = Product(name=name,img_url=cloudinary_upload["url"],  cloudinary_id=cloudinary_upload["public_id"])
         db.session.add(new_product)
         db.session.commit()
-        return jsonify({"product": new_product.serialize()})        
+        return jsonify({"msg": "Product uploaded succesfully"})        
 
     except Exception as error:
         db.session.rollback()
@@ -47,8 +50,7 @@ def upload_image():
 
 @api.route('/products', methods=['GET'])
 def get_all_products():
-    if request.method != 'GET':
-        return jsonify({"error": "Method not Allowed"}), 405
+    method_allowed(request, "GET")
 
     try:
         products = Product.query.all()
@@ -59,4 +61,30 @@ def get_all_products():
 
     except Exception as error:
         return jsonify({"error": error}), 500
-# @api.route('/')
+
+@api.route('/products/<int:id>', methods=['DELETE'])
+def delete_product_by_id(id = None):
+    method_allowed(request, "DELETE")
+    
+    if id is None:
+        return jsonify({"error": "the product id is required"}), 400
+    
+    product = Product.query.get(id)
+    if product is None:
+        return jsonify({"error": "Product not found"}), 404
+
+    try:
+        cloudinary_delete_response = uploader.destroy(product.cloudinary_id)
+
+        if cloudinary_delete_response["result"] != "ok":
+            return jsonify({"error": "cloudinary deletion error"}) 
+        
+        db.session.delete(product)
+        db.session.commit()
+
+        return jsonify({"Msg": "Product deleted successfully"})
+
+    except Exception as error:
+        return jsonify({"error": error}), 500
+        
+

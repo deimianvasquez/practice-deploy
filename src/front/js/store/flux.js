@@ -46,7 +46,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             mode: "no-cors",
             body: product,
           });
-          console.log(response);
+          getActions().getProducts();
         } catch (error) {
           console.log("getProduct Error", error);
         }
@@ -65,6 +65,21 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
         } catch (error) {
           console.log("getProduct Error", error);
+        }
+      },
+      deleteProduct: async (product_id) => {
+        const store = getStore();
+        try {
+          const response = await fetch(
+            `${store.backendUrl}/products/${product_id}`,
+            {
+              method: "DELETE",
+            }
+          );
+          console.log(response);
+          getActions().getProducts();
+        } catch (error) {
+          console.log("deleteProduct error", error);
         }
       },
     },
