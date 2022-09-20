@@ -4,38 +4,42 @@ import { Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 
 export const Demo = () => {
-	const { store, actions } = useContext(Context);
+  const { store, actions } = useContext(Context);
+  const [imageFile, setImageFile] = useState();
+  const [imageName, setImageName] = useState("");
 
-	return (
-		<div className="container">
-			<ul className="list-group">
-				{store.demo.map((item, index) => {
-					return (
-						<li
-							key={index}
-							className="list-group-item d-flex justify-content-between"
-							style={{ background: item.background }}>
-							<Link to={"/single/" + index}>
-								<span>Link to: {item.title}</span>
-							</Link>
-							{// Conditional render example
-							// Check to see if the background is orange, if so, display the message
-							item.background === "orange" ? (
-								<p style={{ color: item.initial }}>
-									Check store/flux.js scroll to the actions to see the code
-								</p>
-							) : null}
-							<button className="btn btn-success" onClick={() => actions.changeColor(index, "orange")}>
-								Change Color
-							</button>
-						</li>
-					);
-				})}
-			</ul>
-			<br />
-			<Link to="/">
-				<button className="btn btn-primary">Back home</button>
-			</Link>
-		</div>
-	);
+  const handleSubmit = () => {
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("name", imageName);
+    actions.uploadImg(formData);
+  };
+  return (
+    <div className="container">
+      <div className="my-5">
+        <input
+          className="input-group my-2"
+          type="file"
+          name="file"
+          onChange={(e) => setImageFile(e.target.files[0])}
+          accept=".jpg, .jpeg, .png"
+        />
+        <input
+          className="input-group my-2"
+          type="text"
+          name="image"
+          value={imageName}
+          placeholder="nombre de la imagen"
+          onChange={(e) => setImageName(e.target.value)}
+        />
+        <button className="btn btn-primary" onClick={() => handleSubmit()}>
+          Subir imagen
+        </button>
+      </div>
+      <br />
+      <Link to="/">
+        <button className="btn btn-primary">Back home</button>
+      </Link>
+    </div>
+  );
 };

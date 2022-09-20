@@ -2,18 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
       message: null,
-      demo: [
-        {
-          title: "FIRST",
-          background: "white",
-          initial: "white",
-        },
-        {
-          title: "SECOND",
-          background: "white",
-          initial: "white",
-        },
-      ],
+      backendUrl: process.env.BACKEND_URL,
     },
     actions: {
       // Use getActions to call a function within a fuction
@@ -22,11 +11,10 @@ const getState = ({ getStore, getActions, setStore }) => {
       },
 
       getMessage: async () => {
+        const store = getStore();
         try {
           // fetching data from the backend
-          const resp = await fetch(
-            "https://practice-deploy-one.herokuapp.com/api/hello"
-          );
+          const resp = await fetch(`${store.backendUrl}/hello`);
           const data = await resp.json();
           setStore({ message: data.message });
           // don't forget to return something, that is how the async resolves
@@ -48,6 +36,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 
         //reset the global store
         setStore({ demo: demo });
+      },
+      uploadImg: async (product) => {
+        const store = getStore();
+        try {
+          const response = await fetch(`${store.backendUrl}/products`, {
+            method: "POST",
+            mode: "no-cors",
+            body: product,
+          });
+          console.log(response);
+        } catch (error) {
+          console.log("Error:", error);
+        }
       },
     },
   };
