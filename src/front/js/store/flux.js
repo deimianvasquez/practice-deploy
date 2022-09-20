@@ -3,6 +3,7 @@ const getState = ({ getStore, getActions, setStore }) => {
     store: {
       message: null,
       backendUrl: process.env.BACKEND_URL,
+      products: [],
     },
     actions: {
       // Use getActions to call a function within a fuction
@@ -47,7 +48,23 @@ const getState = ({ getStore, getActions, setStore }) => {
           });
           console.log(response);
         } catch (error) {
-          console.log("Error:", error);
+          console.log("getProduct Error", error);
+        }
+      },
+      getProducts: async () => {
+        const store = getStore();
+        try {
+          const response = await fetch(`${store.backendUrl}/products`);
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error("getProduct error");
+          }
+          setStore({
+            ...store,
+            products: data,
+          });
+        } catch (error) {
+          console.log("getProduct Error", error);
         }
       },
     },

@@ -14,6 +14,12 @@ export const Demo = () => {
     formData.append("name", imageName);
     actions.uploadImg(formData);
   };
+
+  useEffect(() => {
+    if (store.products && store.products.length > 0) return;
+    actions.getProducts();
+  }, [store.products]);
+
   return (
     <div className="container">
       <div className="my-5">
@@ -36,6 +42,18 @@ export const Demo = () => {
           Subir imagen
         </button>
       </div>
+
+      <div>
+        {store.products &&
+          store.products.map((product) => (
+            <div className="card p-3">
+              <img src={product.img_url} alt={`product ${product.name}`} />
+              {product.name}
+              <i class="bi bi-trash"></i>
+            </div>
+          ))}
+      </div>
+
       <br />
       <Link to="/">
         <button className="btn btn-primary">Back home</button>
