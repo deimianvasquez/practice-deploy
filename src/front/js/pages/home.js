@@ -18,7 +18,6 @@ export const Home = () => {
       </div>
       <p>
         This boilerplate comes with lots of documentation:{" "}
-        <h1>Hola que tal!</h1>
         <a href="https://github.com/4GeeksAcademy/react-flask-hello/tree/95e0540bd1422249c3004f149825285118594325/docs">
           Read documentation
         </a>
